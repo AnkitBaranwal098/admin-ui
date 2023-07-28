@@ -1,7 +1,7 @@
 import React from 'react'
 import "./Admin.css"
 import Table from './Table'
-import Header from './Header'
+// import Header from './Header'
 const Admin = () => {
 
   return (
