@@ -1,11 +1,10 @@
 import React from 'react'
 import "./Pagination.css"
 import { recordsPerPage } from '../config/config';
-import { useState } from 'react';
 
-const Pagination = ({ users, setRecords, currentPage, setCurrentPage, setLastIndex, setFirstIndex }) => {
+const Pagination = ({ filteredUsersList, setRecords, currentPage, setCurrentPage, setLastIndex, setFirstIndex }) => {
 
-    const numberOfPages = Math.ceil(users.length / recordsPerPage);
+    const numberOfPages = Math.ceil(filteredUsersList.length / recordsPerPage);
     const paginationNumber = [...Array(numberOfPages + 1).keys()].slice(1);
 
     const createNextRecords = (n) => {
@@ -14,7 +13,7 @@ const Pagination = ({ users, setRecords, currentPage, setCurrentPage, setLastInd
         setLastIndex(newLastIndex)
         setFirstIndex(newFirstIndex)
 
-        return users.slice(newFirstIndex, newLastIndex);
+        return filteredUsersList.slice(newFirstIndex, newLastIndex);
     }
 
     const setActivePage = (n)=>{

@@ -5,16 +5,15 @@ import "./Table.css"
 import TableBody from './TableBody';
 import Pagination from './Pagination';
 
-const Table = () => {
+const Table = ({searchText}) => {
 
     const [users, setUsers] = useState([]);
+    const [filteredUsersList, setFilteredUsersList] = useState([])
     const [records, setRecords] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
-
     const [lastIndex, setLastIndex] = useState(currentPage*recordsPerPage);
     const [firstIndex, setFirstIndex] = useState(lastIndex-recordsPerPage);
-    // const lastIndex = currentPage*recordsPerPage;
-    // const firstIndex = lastIndex-recordsPerPage;
+
 
     const fetchDataFromUrl = async () => {
         try {
@@ -26,10 +25,19 @@ const Table = () => {
         }
     }
 
+    useEffect(()=>{
+        const fitleredUser = users.filter((user)=>{
+            return user.name.includes(searchText) || user.email.includes(searchText) || user.role.includes(searchText)
+        })
+        setFilteredUsersList(fitleredUser);
+        setRecords(fitleredUser.slice(firstIndex, lastIndex))
+    }, [searchText])
+
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchDataFromUrl();
             setUsers(data);
+            setFilteredUsersList(data);
             setRecords(data.slice(firstIndex, lastIndex))
         }
         fetchData();
@@ -52,7 +60,7 @@ const Table = () => {
                 </tbody>
             </table>
             <Pagination 
-            users={users} 
+            filteredUsersList={filteredUsersList} 
             setRecords={setRecords}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
