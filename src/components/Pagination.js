@@ -49,11 +49,12 @@ const Pagination = ({ users, setRecords, currentPage, setCurrentPage, setLastInd
 
     const firstPage = ()=>{
         setRecords(createNextRecords(1));
-        console.log(currentPage)
+        setCurrentPage(1);
         setActivePage(1);
     }
     const lastPage = ()=>{
         setRecords(createNextRecords(numberOfPages));
+        setCurrentPage(numberOfPages)
         setActivePage(numberOfPages);
     }
     return (
