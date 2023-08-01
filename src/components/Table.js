@@ -4,6 +4,7 @@ import { url, recordsPerPage } from "../config/config";
 import "./Table.css"
 import TableBody from './TableBody';
 import Pagination from './Pagination';
+import { useSnackbar } from "notistack";
 
 const Table = ({searchText}) => {
 
@@ -13,7 +14,7 @@ const Table = ({searchText}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [lastIndex, setLastIndex] = useState(currentPage*recordsPerPage);
     const [firstIndex, setFirstIndex] = useState(lastIndex-recordsPerPage);
-
+    const { enqueueSnackbar } = useSnackbar();
 
     const fetchDataFromUrl = async () => {
         try {
@@ -25,8 +26,17 @@ const Table = ({searchText}) => {
         }
     }
 
+    const triggerSnackbar = (message, variantType) => {
+        enqueueSnackbar(message, {
+          variant: variantType,
+          preventDuplicate: true,
+          
+          autoHideDuration: 2000,
+        });
+      };
+
     const handleDeleteUser = (contactId)=>{
-        console.log(`User with id ${contactId} deleted successfully`)
+        triggerSnackbar(`User with id ${contactId} deleted successfully.`, "success");
         const modifiedUsers = users.filter((record)=> record.id!=contactId)
         setUsers(modifiedUsers)
         setFilteredUsersList(modifiedUsers);
