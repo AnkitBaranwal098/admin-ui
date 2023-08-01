@@ -5,7 +5,6 @@ const Header = () => {
         <nav>
             <div>
                 <AdminPanelSettingsSharpIcon/>
-                AdminUI
             </div>
             <div>
                 <button>

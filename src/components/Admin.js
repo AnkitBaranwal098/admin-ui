@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import "./Admin.css"
 import Table from './Table'
-
 const Admin = () => {
 
   const [searchText, setSearchText] = useState("");
@@ -10,8 +9,7 @@ const Admin = () => {
   const searchInput = (event)=>{
     event.preventDefault();
     const searchItem = event.target.value.toLowerCase();
-    setSearchText(event.target.value);
-    console.log(event.target.value)
+    setSearchText(searchItem);
   }
 
   return (
