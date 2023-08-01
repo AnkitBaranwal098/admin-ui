@@ -25,6 +25,14 @@ const Table = ({searchText}) => {
         }
     }
 
+    const handleDeleteUser = (contactId)=>{
+        console.log(`User with id ${contactId} deleted successfully`)
+        const modifiedUsers = users.filter((record)=> record.id!=contactId)
+        setUsers(modifiedUsers)
+        setFilteredUsersList(modifiedUsers);
+        setRecords(modifiedUsers.slice(firstIndex, lastIndex))
+    }
+
     useEffect(()=>{
         const fitleredUser = users.filter((user)=>{
             return user.name.includes(searchText) || user.email.includes(searchText) || user.role.includes(searchText)
@@ -56,7 +64,7 @@ const Table = ({searchText}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {records.map((record) => <TableBody name={record.name} email={record.email} role={record.role} key={record.id} />)}
+                    {records.map((record) => <TableBody id={record.id} name={record.name} email={record.email} role={record.role} handleDeleteUser={handleDeleteUser} key={record.id} />)}
                 </tbody>
             </table>
             <Pagination 

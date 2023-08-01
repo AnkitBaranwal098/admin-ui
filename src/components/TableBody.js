@@ -3,7 +3,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import "./TableBody.css"
 
-const TableBody = ({ name, email, role }) => {
+const TableBody = ({id, name, email, role, handleDeleteUser }) => {
     return (
         <tr>
             <td>
@@ -15,7 +15,7 @@ const TableBody = ({ name, email, role }) => {
             <td>
                 <span className='icon-container'>
                     <EditOutlinedIcon className='icon'/>
-                    <DeleteOutlineOutlinedIcon style={{ color: "red" }} className='icon'/>
+                    <DeleteOutlineOutlinedIcon style={{ color: "red" }} className='icon' onClick={()=>handleDeleteUser(id)}/>
                 </span>
             </td>
         </tr>
