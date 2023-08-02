@@ -25,3 +25,7 @@ th {
 input[type=checkbox]:hover {
   cursor: pointer;
 }
+
+.delete-btn-container{
+  margin-top: 2.5rem;
+}

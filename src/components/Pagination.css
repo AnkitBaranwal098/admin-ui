@@ -1,6 +1,6 @@
 .pagination-wrapper{
-  margin: 48px;
   text-align: right;
+  margin-top: -2.5rem;
 }
 .pagination {
     display: inline-block;
