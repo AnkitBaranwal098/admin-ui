@@ -3,24 +3,16 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import "./TableBody.css"
 
-const TableBody = ({id, name, email, role, handleDeleteUser, chekedUsersList, setCheckedUsersList }) => {
-
-    
-    const handleCheckUser = ()=>{
-        
-        const newCheckedUsersList = [...chekedUsersList];
-        const index = newCheckedUsersList.findIndex((userId)=> userId==id)
-        if(index==-1)
-            newCheckedUsersList.push(id)
-        else
-            newCheckedUsersList.splice(index,1);
-        setCheckedUsersList(newCheckedUsersList)
-    }
+const TableBody = ({checked, handleCheckboxChange, id, name, email, role, handleDeleteUser }) => {
 
     return (
-        <tr>
+        <tr className={checked?"highlight-row":""}>
             <td>
-                <input type="checkbox" onChange={handleCheckUser}/>
+                <input 
+                type="checkbox"
+                checked={checked} 
+                onChange={(event)=>handleCheckboxChange(event, id)}
+                />
             </td>
             <td>{name}</td>
             <td>{email}</td>

@@ -13,7 +13,6 @@ const Table = ({ searchText }) => {
     const [users, setUsers] = useState([]);
     const [filteredUsersList, setFilteredUsersList] = useState([])
     const [records, setRecords] = useState([])
-    const [chekedUsersList, setCheckedUsersList] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [lastIndex, setLastIndex] = useState(currentPage * recordsPerPage);
     const [firstIndex, setFirstIndex] = useState(lastIndex - recordsPerPage);
@@ -40,28 +39,71 @@ const Table = ({ searchText }) => {
 
     const handleDeleteUser = (contactId) => {
         triggerSnackbar(`User with id ${contactId} deleted successfully.`, "success");
-        const modifiedUsers = users.filter((record) => record.id != contactId)
+        const modifiedUsers = users.filter((record) => record.id !== contactId)
         setUsers(modifiedUsers)
         setFilteredUsersList(modifiedUsers);
         setRecords(modifiedUsers.slice(firstIndex, lastIndex))
     }
 
     const deleteSelectedUsers = () => {
-        const idToDelete = new Set(chekedUsersList);
-
-        if (chekedUsersList.length != 0) {
-            triggerSnackbar(`Checked users deleted successfully.`, "success");
-            const newArray = filteredUsersList.filter((user) => {
-                return !idToDelete.has(user.id)
-            })
-            // setUsers(newArray);
-            setFilteredUsersList(newArray)
-            setRecords(newArray.slice(firstIndex, lastIndex));
-        }
-        else{
-            triggerSnackbar(`Please check users to delete.`, "warning");
-        }
+        const updatedData = filteredUsersList.filter((user) => !user.checked);
+        const updatedUserData = users.filter((user)=> !user.checked);
+        console.log(updatedUserData)
+        setUsers(updatedUserData)
+        setFilteredUsersList(updatedData)
+        setRecords(updatedData.slice(firstIndex, lastIndex))
     }
+
+    const handleCheckboxChange = (event, userId) => {
+        const updatedUsers = users.map((user) => {
+            if (user.id === userId) {
+                return {
+                    ...user,
+                    checked: event.target.checked,
+                };
+            }
+            return user;
+        })
+        const updatedFilteredList = filteredUsersList.map((user) => {
+            if (user.id === userId) {
+                return {
+                    ...user,
+                    checked: event.target.checked,
+                };
+            }
+            return user;
+        })
+        setUsers(updatedUsers)
+        setFilteredUsersList(updatedFilteredList);
+        setRecords(updatedFilteredList.slice(firstIndex, lastIndex));
+    }
+
+    const selectAllRecords = (event)=>{
+       
+        const updatedData = records.map((user)=>({
+            ...user,
+            checked: event.target.checked
+        }))
+
+        const checkedData = users.map((user) => {
+            return {
+              ...user,
+              ...updatedData.find((checkedUsers) => checkedUsers.id === user.id),
+            };
+          });
+
+        const chekedAllFilteredData = filteredUsersList.map((user) => {
+            return {
+              ...user,
+              ...updatedData.find((checkedUsers) => checkedUsers.id === user.id),
+            };
+          });
+
+        setUsers(checkedData)
+        setFilteredUsersList(chekedAllFilteredData);
+        setRecords(chekedAllFilteredData.slice(firstIndex, lastIndex));
+    }
+
 
     useEffect(() => {
         const fitleredUser = users.filter((user) => {
@@ -86,7 +128,7 @@ const Table = ({ searchText }) => {
             <table>
                 <thead>
                     <tr>
-                        <th><input type='checkbox' /></th>
+                        <th><input type='checkbox' onChange={selectAllRecords}/></th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
@@ -95,12 +137,12 @@ const Table = ({ searchText }) => {
                 </thead>
                 <tbody>
                     {records.map((record) => <TableBody
+                        checked={record.checked}
+                        handleCheckboxChange={handleCheckboxChange}
                         id={record.id} name={record.name}
                         email={record.email}
                         role={record.role}
                         handleDeleteUser={handleDeleteUser}
-                        chekedUsersList={chekedUsersList}
-                        setCheckedUsersList={setCheckedUsersList}
                         key={record.id} />)}
                 </tbody>
             </table>

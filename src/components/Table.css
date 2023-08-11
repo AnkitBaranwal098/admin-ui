@@ -15,7 +15,8 @@ td {
 
 th {
   /* #e3e3e3 slight darker shade */
-  background-color: #f2f2f2;
+  background-color: rgba(182, 74, 11, 0.323);
+  color: rgb(96, 0, 0);;
 }
 
 .action {
