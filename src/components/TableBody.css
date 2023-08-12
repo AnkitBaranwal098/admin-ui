@@ -1,3 +1,22 @@
+.pillStyle{
+    display: inline-block;
+    background: #e0e0e0;
+    border-radius: 16px;
+    padding: 4px 8px;
+    margin: 4px -1px;
+    font-size: 14px;
+}
+
+.member{
+    background-color: #c919422c;
+    color: #333333;
+}
+/* #f4baba */
+.admin{
+    background-color: #563c522c;
+    color: #333333;
+}
+
 .icon-container{
     display: flex;
     flex-direction: row;
@@ -10,6 +29,6 @@
 }
 
 .highlight-row{
-    background-color: rgba(209, 149, 114, 0.099);
+    background-color: rgba(167, 126, 102, 0.174);
     color: rgb(96, 0, 0);
 }

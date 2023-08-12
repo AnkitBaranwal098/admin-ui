@@ -45,13 +45,55 @@ const Table = ({ searchText }) => {
         setRecords(modifiedUsers.slice(firstIndex, lastIndex))
     }
 
+    // const deleteSelectedUsers = () => {
+
+    //     //check
+    //     const temp = filteredUsersList.filter((user) => user.checked);
+    //     const temp1 = users.filter((user) => user.checked);
+
+    //     if (temp.length !== 0 || temp1.length !== 0) {
+    //         triggerSnackbar(`Selected users deleted successfully.`, "success");
+    //         const updatedFilteredData = filteredUsersList.filter((user) => !user.checked);
+    //         const updatedUserData = users.filter((user) => !user.checked);
+    //         setUsers(updatedUserData)
+    //         setFilteredUsersList(updatedFilteredData)
+    //         setRecords(updatedFilteredData.slice(firstIndex, lastIndex))
+    //     }
+    //     else {
+    //         triggerSnackbar(`Please select user's checkbox to delete.`, "warning");
+    //     }
+    // }
+
     const deleteSelectedUsers = () => {
-        const updatedData = filteredUsersList.filter((user) => !user.checked);
-        const updatedUserData = users.filter((user)=> !user.checked);
-        console.log(updatedUserData)
-        setUsers(updatedUserData)
-        setFilteredUsersList(updatedData)
-        setRecords(updatedData.slice(firstIndex, lastIndex))
+
+        const { checkedUsers, notCheckedUsers } = users.reduce((acc, user) => {
+            if (user.checked) {
+                acc.checkedUsers.push(user);
+            } else {
+                acc.notCheckedUsers.push(user);
+            }
+            return acc;
+        }, { checkedUsers: [], notCheckedUsers: [] });
+
+        const { checkedFilteredUsers, notCheckedFilteredUsers } = filteredUsersList.reduce((acc, user) => {
+            if (user.checked) {
+                acc.checkedFilteredUsers.push(user);
+            } else {
+                acc.notCheckedFilteredUsers.push(user);
+            }
+            return acc;
+        }, { checkedFilteredUsers: [], notCheckedFilteredUsers: [] });
+
+        if (checkedUsers.length === 0 || checkedFilteredUsers.length === 0) {
+            triggerSnackbar(`Please select user's checkbox to delete.`, "warning");
+        }
+        else {
+            triggerSnackbar(`Selected users deleted successfully.`, "success");
+            setUsers(notCheckedUsers)
+            setFilteredUsersList(notCheckedFilteredUsers)
+            setRecords(notCheckedFilteredUsers.slice(firstIndex, lastIndex))
+        }
+
     }
 
     const handleCheckboxChange = (event, userId) => {
@@ -78,26 +120,26 @@ const Table = ({ searchText }) => {
         setRecords(updatedFilteredList.slice(firstIndex, lastIndex));
     }
 
-    const selectAllRecords = (event)=>{
-       
-        const updatedData = records.map((user)=>({
+    const selectAllRecords = (event) => {
+
+        const updatedData = records.map((user) => ({
             ...user,
             checked: event.target.checked
         }))
 
         const checkedData = users.map((user) => {
             return {
-              ...user,
-              ...updatedData.find((checkedUsers) => checkedUsers.id === user.id),
+                ...user,
+                ...updatedData.find((checkedUsers) => checkedUsers.id === user.id),
             };
-          });
+        });
 
         const chekedAllFilteredData = filteredUsersList.map((user) => {
             return {
-              ...user,
-              ...updatedData.find((checkedUsers) => checkedUsers.id === user.id),
+                ...user,
+                ...updatedData.find((checkedUsers) => checkedUsers.id === user.id),
             };
-          });
+        });
 
         setUsers(checkedData)
         setFilteredUsersList(chekedAllFilteredData);
@@ -128,7 +170,7 @@ const Table = ({ searchText }) => {
             <table>
                 <thead>
                     <tr>
-                        <th><input type='checkbox' onChange={selectAllRecords}/></th>
+                        <th><input type='checkbox' onChange={selectAllRecords} /></th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>

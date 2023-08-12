@@ -6,9 +6,9 @@ table {
 th,
 td {
   /* Horizontal borders for table cells */
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ac9e9ec9;
   /* Horizontal borders for table cells */
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ac9e9ec9;
   padding: 8px;
   text-align: left;
 }
@@ -29,4 +29,5 @@ input[type=checkbox]:hover {
 
 .delete-btn-container{
   margin-top: 2.5rem;
+
 }
