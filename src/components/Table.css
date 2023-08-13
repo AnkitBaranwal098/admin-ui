@@ -1,6 +1,17 @@
-table {
+/* table {
   border-collapse: collapse;
+  box-shadow: 0px 10px 10px #ccc;
   width: 100%;
+} */
+
+table{
+  overflow: hidden;
+  border-collapse: collapse;
+  box-shadow: 0px 10px 10px #ccc;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 80%;
+  margin: auto;
 }
 
 th,
@@ -16,7 +27,7 @@ td {
 th {
   /* #e3e3e3 slight darker shade */
   background-color: rgba(182, 74, 11, 0.323);
-  color: rgb(96, 0, 0);;
+  color: rgb(96, 0, 0);
 }
 
 .action {
@@ -29,5 +40,4 @@ input[type=checkbox]:hover {
 
 .delete-btn-container{
   margin-top: 2.5rem;
-
 }

@@ -15,7 +15,9 @@ const Admin = () => {
   return (
     <>
     <section className='table-container'>
+      <div className='search-container'>
       <input type='search' placeholder='Search by name, email, role' className='search-bar' value={searchText} onChange={(event)=>searchInput(event)}/>
+      </div>
       <Table searchText={searchText}/>
     </section>
     </>

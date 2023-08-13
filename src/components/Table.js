@@ -5,8 +5,7 @@ import "./Table.css"
 import TableBody from './TableBody';
 import Pagination from './Pagination';
 import { useSnackbar } from "notistack";
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditableRow from './EditableRow';
 
 const Table = ({ searchText }) => {
 
@@ -16,6 +15,13 @@ const Table = ({ searchText }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [lastIndex, setLastIndex] = useState(currentPage * recordsPerPage);
     const [firstIndex, setFirstIndex] = useState(lastIndex - recordsPerPage);
+    //If editUserId is null it signifies that the user is not editing any row 
+    const [editUserId, setEditUserId] = useState(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        role: ""
+    })
     const { enqueueSnackbar } = useSnackbar();
 
     const fetchDataFromUrl = async () => {
@@ -24,7 +30,7 @@ const Table = ({ searchText }) => {
             return data.data;
         }
         catch (err) {
-            console.log(err);
+            triggerSnackbar("Error loading data","error");
         }
     }
 
@@ -146,6 +152,40 @@ const Table = ({ searchText }) => {
         setRecords(chekedAllFilteredData.slice(firstIndex, lastIndex));
     }
 
+    const handleEditEvent = (event, id) => {
+        setEditUserId(id);
+    }
+
+    const updateUserData = (event) => {
+
+        const inputFieldName = event.target.getAttribute('name');
+        const inputFieldValue = event.target.value;
+
+        const updatedUserData = { ...formData }
+        updatedUserData[inputFieldName] = inputFieldValue;
+
+        setFormData(updatedUserData);
+
+    }
+
+    const modifyUsersList = () => {
+
+        const usersIndex = users.findIndex((user) => user.id == editUserId)
+        const filteredUsersIndex = filteredUsersList.findIndex((user) => user.id == editUserId)
+
+        let tempUsers = [...users];
+        tempUsers[usersIndex] = { ...formData, id: editUserId }
+
+        let tempFilteredUsersList = [...filteredUsersList];
+        tempFilteredUsersList[filteredUsersIndex] = { ...formData, id: editUserId }
+
+        setUsers(tempUsers);
+        setFilteredUsersList(tempFilteredUsersList);
+        setRecords(tempFilteredUsersList.slice(firstIndex, lastIndex))
+        triggerSnackbar(`User with id ${editUserId} updated succesfully.`, "success")
+        setEditUserId(null)
+    }
+
 
     useEffect(() => {
         const fitleredUser = users.filter((user) => {
@@ -178,20 +218,34 @@ const Table = ({ searchText }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {records.map((record) => <TableBody
-                        checked={record.checked}
-                        handleCheckboxChange={handleCheckboxChange}
-                        id={record.id} name={record.name}
-                        email={record.email}
-                        role={record.role}
-                        handleDeleteUser={handleDeleteUser}
-                        key={record.id} />)}
+                    {records.map((record) =>
+                    (<React.Fragment key={record.id}>
+                        {/* if the editUserId is equal to the record's id 
+                            then it will show the editable row component else will show the TableBody component */}
+                        {editUserId == record.id ? <EditableRow
+                            record={record}
+                            setEditUserId={setEditUserId}
+                            formData={formData}
+                            setFormData={setFormData}
+                            updateUserData={updateUserData}
+                            modifyUsersList={modifyUsersList}
+                            checked={record.checked}
+                            handleCheckboxChange={handleCheckboxChange}
+                        /> : <TableBody
+                            checked={record.checked}
+                            handleCheckboxChange={handleCheckboxChange}
+                            id={record.id}
+                            name={record.name}
+                            email={record.email}
+                            role={record.role}
+                            handleDeleteUser={handleDeleteUser}
+                            handleEditEvent={handleEditEvent}
+                        />}
+                    </React.Fragment>)
+                    )}
                 </tbody>
             </table>
             <div className='delete-btn-container'>
-                <Button variant="outlined" startIcon={<DeleteIcon />} onClick={deleteSelectedUsers}>
-                    Delete
-                </Button>
                 <Pagination
                     filteredUsersList={filteredUsersList}
                     setRecords={setRecords}
@@ -199,6 +253,7 @@ const Table = ({ searchText }) => {
                     setCurrentPage={setCurrentPage}
                     setLastIndex={setLastIndex}
                     setFirstIndex={setFirstIndex}
+                    deleteSelectedUsers={deleteSelectedUsers}
                 />
             </div>
         </>

@@ -2,7 +2,11 @@ import React from 'react'
 import "./Pagination.css"
 import { recordsPerPage } from '../config/config';
 
-const Pagination = ({ filteredUsersList, setRecords, currentPage, setCurrentPage, setLastIndex, setFirstIndex }) => {
+
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const Pagination = ({ filteredUsersList, setRecords, currentPage, setCurrentPage, setLastIndex, setFirstIndex, deleteSelectedUsers }) => {
 
     const numberOfPages = Math.ceil(filteredUsersList.length / recordsPerPage);
     const paginationNumber = [...Array(numberOfPages + 1).keys()].slice(1);
@@ -16,7 +20,7 @@ const Pagination = ({ filteredUsersList, setRecords, currentPage, setCurrentPage
         return filteredUsersList.slice(newFirstIndex, newLastIndex);
     }
 
-    const setActivePage = (n)=>{
+    const setActivePage = (n) => {
         const isActivePage = document.getElementById(currentPage);
         isActivePage.classList.remove('active');
         const setActivePage = document.getElementById(n);
@@ -46,18 +50,23 @@ const Pagination = ({ filteredUsersList, setRecords, currentPage, setCurrentPage
         setRecords(createNextRecords(n));
     }
 
-    const firstPage = ()=>{
+    const firstPage = () => {
         setRecords(createNextRecords(1));
         setCurrentPage(1);
         setActivePage(1);
     }
-    const lastPage = ()=>{
+    const lastPage = () => {
         setRecords(createNextRecords(numberOfPages));
         setCurrentPage(numberOfPages)
         setActivePage(numberOfPages);
     }
     return (
         <div className='pagination-wrapper'>
+           <div>
+           <Button variant="outlined" startIcon={<DeleteIcon />} onClick={deleteSelectedUsers} >
+                Delete
+            </Button>
+           </div>
             <nav className='pagination'>
                 <a href="#" onClick={firstPage}>&laquo;</a>
                 <a href="#" onClick={previousPage}>&lt;</a>

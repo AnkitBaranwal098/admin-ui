@@ -3,8 +3,8 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import "./TableBody.css"
 
-const TableBody = ({ checked, handleCheckboxChange, id, name, email, role, handleDeleteUser }) => {
-
+const TableBody = ({ checked, handleCheckboxChange, id, name, email, role, handleDeleteUser, handleEditEvent }) => {
+    
     return (
         <tr className={checked ? "highlight-row" : ""}>
             <td>
@@ -23,7 +23,7 @@ const TableBody = ({ checked, handleCheckboxChange, id, name, email, role, handl
             </td>
             <td>
                 <span className='icon-container'>
-                    <EditOutlinedIcon className='icon' />
+                    <EditOutlinedIcon className='icon' onClick={(event)=>handleEditEvent(event, id)}/>
                     <DeleteOutlineOutlinedIcon style={{ color: "red" }} className='icon' onClick={() => handleDeleteUser(id)} />
                 </span>
             </td>
