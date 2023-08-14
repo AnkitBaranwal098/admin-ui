@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react'
 import "./Admin.css"
 import Table from './Table'
@@ -6,12 +6,13 @@ const Admin = () => {
 
   const [searchText, setSearchText] = useState("");
 
+  //Method to handle the input event from the search field
   const searchInput = (event)=>{
-    event.preventDefault();
     const searchItem = event.target.value.toLowerCase();
     setSearchText(searchItem);
   }
 
+  // Contains the table and search component
   return (
     <>
     <section className='table-container'>

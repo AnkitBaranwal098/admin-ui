@@ -9,12 +9,18 @@ import EditableRow from './EditableRow';
 
 const Table = ({ searchText }) => {
 
+    //Here we store the entire users list fetched from the api
     const [users, setUsers] = useState([]);
+    //Here we store the users list fetched from api till it is filtered depending on name, role, email
     const [filteredUsersList, setFilteredUsersList] = useState([])
+    //Here we store the users list based on pagination
     const [records, setRecords] = useState([])
+
+    // State variables for the Pagination UI
     const [currentPage, setCurrentPage] = useState(1);
     const [lastIndex, setLastIndex] = useState(currentPage * recordsPerPage);
     const [firstIndex, setFirstIndex] = useState(lastIndex - recordsPerPage);
+
     //If editUserId is null it signifies that the user is not editing any row 
     const [editUserId, setEditUserId] = useState(null);
     const [formData, setFormData] = useState({
@@ -24,16 +30,18 @@ const Table = ({ searchText }) => {
     })
     const { enqueueSnackbar } = useSnackbar();
 
+    //Function to fetch data from the specified url using the axios library
     const fetchDataFromUrl = async () => {
         try {
             const data = await axios.get(url)
             return data.data;
         }
         catch (err) {
-            triggerSnackbar("Error loading data","error");
+            triggerSnackbar("Error loading data", "error");
         }
     }
 
+    //Function to trigger snackbar when and where needed
     const triggerSnackbar = (message, variantType) => {
         enqueueSnackbar(message, {
             variant: variantType,
@@ -43,6 +51,7 @@ const Table = ({ searchText }) => {
         });
     };
 
+    //Function to handle delete operation. Deletes the user with the given userId and updates the list
     const handleDeleteUser = (contactId) => {
         triggerSnackbar(`User with id ${contactId} deleted successfully.`, "success");
         const modifiedUsers = users.filter((record) => record.id !== contactId)
@@ -51,25 +60,7 @@ const Table = ({ searchText }) => {
         setRecords(modifiedUsers.slice(firstIndex, lastIndex))
     }
 
-    // const deleteSelectedUsers = () => {
-
-    //     //check
-    //     const temp = filteredUsersList.filter((user) => user.checked);
-    //     const temp1 = users.filter((user) => user.checked);
-
-    //     if (temp.length !== 0 || temp1.length !== 0) {
-    //         triggerSnackbar(`Selected users deleted successfully.`, "success");
-    //         const updatedFilteredData = filteredUsersList.filter((user) => !user.checked);
-    //         const updatedUserData = users.filter((user) => !user.checked);
-    //         setUsers(updatedUserData)
-    //         setFilteredUsersList(updatedFilteredData)
-    //         setRecords(updatedFilteredData.slice(firstIndex, lastIndex))
-    //     }
-    //     else {
-    //         triggerSnackbar(`Please select user's checkbox to delete.`, "warning");
-    //     }
-    // }
-
+    //Function to handle delete operation based on the condition if the user's check box is checked or not
     const deleteSelectedUsers = () => {
 
         const { checkedUsers, notCheckedUsers } = users.reduce((acc, user) => {
@@ -102,6 +93,7 @@ const Table = ({ searchText }) => {
 
     }
 
+    //Function to handle checkbox change based on user's click
     const handleCheckboxChange = (event, userId) => {
         const updatedUsers = users.map((user) => {
             if (user.id === userId) {
@@ -126,6 +118,7 @@ const Table = ({ searchText }) => {
         setRecords(updatedFilteredList.slice(firstIndex, lastIndex));
     }
 
+    //Function to set all user's checkboxes as checked
     const selectAllRecords = (event) => {
 
         const updatedData = records.map((user) => ({
@@ -152,12 +145,15 @@ const Table = ({ searchText }) => {
         setRecords(chekedAllFilteredData.slice(firstIndex, lastIndex));
     }
 
+    //Function to toggle between the editable table row and read only table row
     const handleEditEvent = (event, id) => {
         setEditUserId(id);
     }
 
+    //Function handles the update of user data in the form fields inside the Editable row component.
     const updateUserData = (event) => {
 
+        //Extracts the field name and value from event.target
         const inputFieldName = event.target.getAttribute('name');
         const inputFieldValue = event.target.value;
 
@@ -168,25 +164,38 @@ const Table = ({ searchText }) => {
 
     }
 
+    //Function to validate user's role
+    const validateUserData = () => {
+        let role = formData.role.toLocaleLowerCase();
+        console.log(role)
+        if (role === "member" || role === "admin")
+            return true;
+        return false;
+    }
+
+    //Function updates the user's data for which edit button is clicked
     const modifyUsersList = () => {
+        if (validateUserData()) {
+            const usersIndex = users.findIndex((user) => user.id == editUserId)
+            const filteredUsersIndex = filteredUsersList.findIndex((user) => user.id == editUserId)
 
-        const usersIndex = users.findIndex((user) => user.id == editUserId)
-        const filteredUsersIndex = filteredUsersList.findIndex((user) => user.id == editUserId)
+            let tempUsers = [...users];
+            tempUsers[usersIndex] = { ...formData, id: editUserId }
 
-        let tempUsers = [...users];
-        tempUsers[usersIndex] = { ...formData, id: editUserId }
+            let tempFilteredUsersList = [...filteredUsersList];
+            tempFilteredUsersList[filteredUsersIndex] = { ...formData, id: editUserId }
 
-        let tempFilteredUsersList = [...filteredUsersList];
-        tempFilteredUsersList[filteredUsersIndex] = { ...formData, id: editUserId }
-
-        setUsers(tempUsers);
-        setFilteredUsersList(tempFilteredUsersList);
-        setRecords(tempFilteredUsersList.slice(firstIndex, lastIndex))
-        triggerSnackbar(`User with id ${editUserId} updated succesfully.`, "success")
+            setUsers(tempUsers);
+            setFilteredUsersList(tempFilteredUsersList);
+            setRecords(tempFilteredUsersList.slice(firstIndex, lastIndex))
+            triggerSnackbar(`User with id ${editUserId} updated succesfully.`, "success")
+        }else{
+            triggerSnackbar("User role is invalid.","error")
+        }
         setEditUserId(null)
     }
 
-
+    //Re-renders the component whenever search text changes.Also filters the list
     useEffect(() => {
         const fitleredUser = users.filter((user) => {
             return user.name.includes(searchText) || user.email.includes(searchText) || user.role.includes(searchText)
